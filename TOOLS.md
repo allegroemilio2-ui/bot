@@ -2,60 +2,45 @@
 
 ## CALL-LIMIT
 Max 2 Calls pro Anfrage:
-1. web_search (Pflicht — BREITE Websuche, KEINE Plattform-Priorisierung)
-2. web_fetch (Optional — nur wenn Schritt 1 keine konkreten URLs liefert)
+1. web_search (breite Websuche, keine Plattform-Priorisierung)
+2. web_fetch (optional, nur wenn Schritt 1 keine konkreten URLs liefert)
+Kein Retry. Keine zweite Suche. Keine parallelen Calls.
 
-VERBOTEN: zweiter web_search, zweiter web_fetch, Retry, parallele Calls
-
-## SUCHSTRATEGIE (HARTE REGEL)
-
-IMMER breite Websuche zuerst.
-KEINE Plattform automatisch bevorzugen.
-NICHT site:kleinanzeigen.de als Standard.
-NICHT site:wlw.de als Standard.
-KEINE Domain-Einschränkung im Suchbegriff.
-
-Der Agent sucht im offenen Web und wählt DANACH die beste konkrete Quelle.
+## SUCHSTRATEGIE
+Breite Websuche. Keine Plattform bevorzugen.
+Agent sucht im offenen Web, wählt danach beste Quelle.
 
 ## SUCHBEGRIFFE
 
 ### Pflege
 - "Familie sucht 24h Pflege" + [Stadt/Region]
-- "Angehörige sucht Betreuung zuhause" + [Region]
-- "Privathaushalt sucht Pflegekraft"
-- "suche 24h Betreuung für Mutter" OR "für Vater" OR "für Angehörige"
-KEINE site:-Einschränkung. Breite Suche.
+- "Betreuung für Angehörige gesucht"
+- "Pflegekraft gesucht privat"
+- "24h Betreuung gesucht für Mutter/Vater"
 
 ### B2B (Firmenbedarf)
-- "Firma sucht Vertriebspartner" + [Branche/Region]
+- "Firma sucht Vertriebspartner"
 - "Vertrieb outsourcen Mittelstand"
 - "Kaltakquise Dienstleister gesucht"
 - "Terminierung auslagern"
-KEINE site:-Einschränkung. Breite Suche.
 
 ### Crypto
 ```
 curl -s "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple,binancecoin&vs_currencies=eur,usd&include_24hr_change=true"
 ```
 
-## QUELLENLOGIK
+## URL-REGEL
+Erlaubt: jede konkrete URL zu einem einzelnen relevanten Ergebnis
+(Einzelanzeige, Firmenprofil, Forenbeitrag, konkreter Eintrag)
 
-Pflege — mögliche Quellen (NICHT priorisiert):
-betreut.de, markt.de, quoka.de, pflegehilfe.org, kleinanzeigen.de,
-regionale Portale, Foren, lokale Anzeigenportale, allgemeine Webtreffer
-
-B2B — mögliche Quellen (NICHT priorisiert):
-Firmenwebsites, Branchenverzeichnisse, wlw.de, LinkedIn,
-lokale Firmenverzeichnisse, Google-basierte Webtreffer
-
-Der Agent nimmt was die Suche liefert. Keine Quelle ist bevorzugt.
-
-## URL-CHECK
-ERLAUBT: konkrete URL zu einer Einzelanzeige, einem Firmenprofil oder Inserat
-VERBOTEN: Suchseiten, Startseiten, Kategorieseiten, nur Domain ohne Pfad, Duplikate
+Nicht erlaubt:
+- Suchseiten (/search?, /s-suche/, ?q=)
+- Startseiten / Homepages
+- Kategorieseiten
+- generische Domain ohne konkreten Eintrag
 
 ## ABLAUF
-1. Breite web_search ausführen
-2. Ergebnisse prüfen: konkrete URLs da? → filtern + ausgeben
-3. Keine konkreten URLs? → 1x web_fetch auf beste Quelle → extrahieren → filtern
-4. Ergebnis liefern. STOP.
+1. Breite web_search
+2. Ergebnisse prüfen: konkrete URLs + relevanter Intent?
+3. Falls nein → 1x web_fetch auf beste Quelle → extrahieren
+4. Filter anwenden → Ergebnis liefern → STOP

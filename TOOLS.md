@@ -8,21 +8,26 @@ Kein Retry. Keine zweite Suche. Keine parallelen Calls.
 
 ## SUCHSTRATEGIE
 Breite Websuche. Keine Plattform bevorzugen.
-Agent sucht im offenen Web, wählt danach beste Quelle.
+Bei jeder web_search MEHRERE Suchbegriffe kombinieren (1 Call, mehrere Queries).
 
-## SUCHBEGRIFFE
+## SUCHBEGRIFFE (MULTI-QUERY)
 
-### Pflege
-- "Familie sucht 24h Pflege" + [Stadt/Region]
-- "Betreuung für Angehörige gesucht"
-- "Pflegekraft gesucht privat"
-- "24h Betreuung gesucht für Mutter/Vater"
+### Pflege — alle in 1 web_search kombinieren:
+- "24h Pflege gesucht"
+- "Betreuung für Mutter gesucht"
+- "Senior Betreuung gesucht"
+- "Privat Pflege gesucht"
+- "Angehöriger sucht Betreuung"
+- "24 Stunden Pflege privat gesucht"
+Optional + [Stadt/Region] ergänzen wenn vom User angegeben.
 
-### B2B (Firmenbedarf)
-- "Firma sucht Vertriebspartner"
-- "Vertrieb outsourcen Mittelstand"
-- "Kaltakquise Dienstleister gesucht"
-- "Terminierung auslagern"
+### B2B — alle in 1 web_search kombinieren:
+- "Firma sucht Vertrieb"
+- "Firma sucht Terminierung"
+- "Unternehmen sucht Neukunden"
+- "B2B Terminierung gesucht"
+- "Firma sucht Akquise"
+Optional + [Branche/Region] ergänzen wenn vom User angegeben.
 
 ### Crypto
 ```
@@ -31,16 +36,10 @@ curl -s "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,sola
 
 ## URL-REGEL
 Erlaubt: jede konkrete URL zu einem einzelnen relevanten Ergebnis
-(Einzelanzeige, Firmenprofil, Forenbeitrag, konkreter Eintrag)
-
-Nicht erlaubt:
-- Suchseiten (/search?, /s-suche/, ?q=)
-- Startseiten / Homepages
-- Kategorieseiten
-- generische Domain ohne konkreten Eintrag
+Nicht erlaubt: Suchseiten, Startseiten, Kategorieseiten, generische Domains
 
 ## ABLAUF
-1. Breite web_search
+1. Breite web_search mit mehreren Queries
 2. Ergebnisse prüfen: konkrete URLs + relevanter Intent?
 3. Falls nein → 1x web_fetch auf beste Quelle → extrahieren
 4. Filter anwenden → Ergebnis liefern → STOP

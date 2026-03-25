@@ -39,8 +39,8 @@ NUR Familien / Angehörige / Privathaushalte die Pflege SUCHEN.
 → EIN Treffer = ERGEBNIS VERWERFEN. Keine Ausnahme.
 
 ### Suchbegriffe
-- site:kleinanzeigen.de "suche Pflege für" OR "Betreuung gesucht für Angehörige"
-- "Familie sucht 24h Pflege" + [Stadt]
+- "Familie sucht 24h Pflege" + [Stadt/Region]
+- "Angehörige sucht Betreuung zuhause" + [Region]
 
 ### URL-Check
 NUR erlaubt: /s-anzeige/ + ID

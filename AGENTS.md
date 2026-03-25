@@ -2,37 +2,50 @@
 
 ## CALL-LIMIT
 - Max 2 Calls: 1x web_search + optional 1x web_fetch
-- KEIN Retry. KEIN zweiter Search. KEINE parallelen Calls.
-- Ergebnis unklar → "Kein valider Treffer."
+- Kein Retry. Keine zweite Suche. Keine parallelen Calls.
 - Max 120 Wörter Antwort.
 
 ## SUCHSTRATEGIE
-IMMER breite Websuche. KEINE Plattform-Priorisierung.
-Der Agent sucht im offenen Web und wählt danach die beste Quelle.
+Breite Websuche. Keine Plattform-Priorisierung.
 
-## ABLAUF
-1. Breite web_search → konkrete URLs vorhanden? → filtern + ausgeben
-2. Keine konkreten URLs → 1x web_fetch auf beste Quelle → extrahieren
-3. Ergebnis liefern. STOP.
+## ENTSCHEIDUNGSREGEL
+Lieber 1 brauchbarer Lead als 0 Treffer.
+Aber: Lieber 0 Treffer als Anbieter-/Agentur-/Müll-Treffer.
+Bei keinem validen Ergebnis: "Kein valider Treffer."
 
-## LEAD-VALIDIERUNG
+## PFLEGE — SEMANTISCHE PRÜFUNG
 
-### Pflege
-- [ ] Inserent = Familie/Angehörige/Privathaushalt?
-- [ ] SUCHT Pflege? (nicht bietet an)
-- [ ] Negativfilter clean? (siehe SOUL.md)
-- [ ] Konkrete URL? (nicht Suchseite/Startseite/Domain)
-- [ ] Ort oder PLZ?
-→ Ein NEIN = NICHT ausgeben
+GÜLTIG wenn der Intent klar ist:
+- Privatperson / Angehörige / Privathaushalt braucht Hilfe
+- Pflege / Betreuung / Unterstützung / 24h Hilfe wird gesucht
+- Bedarf ist konkret und individuell
 
-### B2B (Standard: Firmenbedarf)
-- [ ] Echte Firma mit Website?
-- [ ] Vertriebsbedarf erkennbar?
-- [ ] Konkrete URL? (nicht Suchseite/Startseite)
-- [ ] NICHT Jobanzeige/Freelancer/Eigenwerbung?
-→ Ein NEIN = NICHT ausgeben
+NICHT GÜLTIG:
+- Pflegekraft sucht Arbeit
+- Betreuungskraft bietet Dienste an
+- Agentur / Vermittler / Anbieter
+- "wir bieten" / Firmenprofil
+- allgemeiner Ratgeber / Blog / Verzeichnis ohne konkreten Bedarf
 
-### Recruiting-Modus NUR bei: "Recruiting-Modus aktivieren"
+Nicht auf exakte Formulierungen fixieren.
+Den INTENT erkennen: Sucht jemand privat Hilfe? → gültig.
+
+## B2B — SEMANTISCHE PRÜFUNG (Standard: Firmenbedarf)
+
+GÜLTIG wenn:
+- Firma hat erkennbaren Bedarf an Vertrieb / Akquise / Terminierung / Neukunden
+- Konkreter Unternehmensbezug vorhanden
+
+NICHT GÜLTIG:
+- Jobbörse ohne klaren Firmenbedarf
+- Anbieter der nur sich selbst bewirbt
+- Blog / Ratgeber / allgemeine Übersichtsseite
+
+Recruiting-Modus NUR bei: "Recruiting-Modus aktivieren"
+
+## URL-VALIDIERUNG
+Erlaubt: konkrete URL zu einzelnem Ergebnis
+Nicht erlaubt: Suchseiten, Startseiten, Kategorieseiten, generische Domains
 
 ## Arbeitsregeln
 - Deutsch, kurz, Tabelle, max 120 Wörter

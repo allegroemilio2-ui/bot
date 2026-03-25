@@ -1,52 +1,61 @@
 # TOOLS
 
-## CALL-LIMIT (HARTE REGEL)
+## CALL-LIMIT
 Max 2 Calls pro Anfrage:
-1. web_search (Pflicht)
-2. web_fetch (Optional — NUR wenn Schritt 1 keine Deep-Links liefert)
+1. web_search (Pflicht — BREITE Websuche, KEINE Plattform-Priorisierung)
+2. web_fetch (Optional — nur wenn Schritt 1 keine konkreten URLs liefert)
 
-VERBOTEN:
-- Mehr als 1 web_search
-- Mehr als 1 web_fetch
-- Retry / zweite Suche
-- Parallele Calls
-- Hintergrund-Jobs
+VERBOTEN: zweiter web_search, zweiter web_fetch, Retry, parallele Calls
 
-## ABLAUF (EXAKT BEFOLGEN)
+## SUCHSTRATEGIE (HARTE REGEL)
 
-### Schritt 1: web_search
-Suchbegriff ausführen. Ergebnis prüfen:
-→ Deep-Links vorhanden (z.B. /s-anzeige/xxx/123)? → Schritt 3
-→ Keine Deep-Links? → Schritt 2
+IMMER breite Websuche zuerst.
+KEINE Plattform automatisch bevorzugen.
+NICHT site:kleinanzeigen.de als Standard.
+NICHT site:wlw.de als Standard.
+KEINE Domain-Einschränkung im Suchbegriff.
 
-### Schritt 2: web_fetch (optional, max 1x)
-Beste URL aus Schritt 1 mit web_fetch öffnen.
-Aus HTML Einzelanzeigen-URLs extrahieren.
-Nur URLs mit /s-anzeige/, /firma/, /inserat/ + ID behalten.
-
-### Schritt 3: Filter anwenden
-Pflege: Negativfilter (siehe SOUL.md)
-B2B: Firmenbedarf-Filter (siehe SOUL.md)
-Nur valide Leads mit Deep-Link + Ort ausgeben.
-
-### Schritt 4: Ergebnis liefern. STOP.
-Kein weiterer Call. Keine Erklärung. Keine Wiederholung.
+Der Agent sucht im offenen Web und wählt DANACH die beste konkrete Quelle.
 
 ## SUCHBEGRIFFE
 
 ### Pflege
-- site:kleinanzeigen.de "suche Pflege für" OR "Betreuung gesucht"
-- "Familie sucht 24h Pflege" + [Stadt]
+- "Familie sucht 24h Pflege" + [Stadt/Region]
+- "Angehörige sucht Betreuung zuhause" + [Region]
+- "Privathaushalt sucht Pflegekraft"
+- "suche 24h Betreuung für Mutter" OR "für Vater" OR "für Angehörige"
+KEINE site:-Einschränkung. Breite Suche.
 
 ### B2B (Firmenbedarf)
-- site:wlw.de "Vertrieb" + [Branche/Region]
-- "suche Vertriebspartner B2B"
+- "Firma sucht Vertriebspartner" + [Branche/Region]
+- "Vertrieb outsourcen Mittelstand"
+- "Kaltakquise Dienstleister gesucht"
+- "Terminierung auslagern"
+KEINE site:-Einschränkung. Breite Suche.
 
 ### Crypto
 ```
 curl -s "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple,binancecoin&vs_currencies=eur,usd&include_24hr_change=true"
 ```
 
+## QUELLENLOGIK
+
+Pflege — mögliche Quellen (NICHT priorisiert):
+betreut.de, markt.de, quoka.de, pflegehilfe.org, kleinanzeigen.de,
+regionale Portale, Foren, lokale Anzeigenportale, allgemeine Webtreffer
+
+B2B — mögliche Quellen (NICHT priorisiert):
+Firmenwebsites, Branchenverzeichnisse, wlw.de, LinkedIn,
+lokale Firmenverzeichnisse, Google-basierte Webtreffer
+
+Der Agent nimmt was die Suche liefert. Keine Quelle ist bevorzugt.
+
 ## URL-CHECK
-ERLAUBT: /s-anzeige/+ID, /firma/+Name, /inserat/+ID
-VERBOTEN: /s-suche/, /search?, /s-kategorie/, nur Domain, Duplikate
+ERLAUBT: konkrete URL zu einer Einzelanzeige, einem Firmenprofil oder Inserat
+VERBOTEN: Suchseiten, Startseiten, Kategorieseiten, nur Domain ohne Pfad, Duplikate
+
+## ABLAUF
+1. Breite web_search ausführen
+2. Ergebnisse prüfen: konkrete URLs da? → filtern + ausgeben
+3. Keine konkreten URLs? → 1x web_fetch auf beste Quelle → extrahieren → filtern
+4. Ergebnis liefern. STOP.

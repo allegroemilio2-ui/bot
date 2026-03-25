@@ -1,30 +1,34 @@
 # AGENTS
 
-## CALL-LIMIT (OBERSTE REGEL)
-- Max 2 Calls pro Anfrage: 1x web_search + optional 1x web_fetch
-- KEIN Retry. KEIN zweiter web_search. KEINE parallelen Calls.
+## CALL-LIMIT
+- Max 2 Calls: 1x web_search + optional 1x web_fetch
+- KEIN Retry. KEIN zweiter Search. KEINE parallelen Calls.
 - Ergebnis unklar → "Kein valider Treffer."
 - Max 120 Wörter Antwort.
 
+## SUCHSTRATEGIE
+IMMER breite Websuche. KEINE Plattform-Priorisierung.
+Der Agent sucht im offenen Web und wählt danach die beste Quelle.
+
 ## ABLAUF
-1. web_search → Deep-Links vorhanden? → Ja: filtern + ausgeben
-2. Keine Deep-Links → web_fetch auf beste URL → extrahieren → filtern
+1. Breite web_search → konkrete URLs vorhanden? → filtern + ausgeben
+2. Keine konkreten URLs → 1x web_fetch auf beste Quelle → extrahieren
 3. Ergebnis liefern. STOP.
 
 ## LEAD-VALIDIERUNG
 
-### Pflege — Checkliste
+### Pflege
 - [ ] Inserent = Familie/Angehörige/Privathaushalt?
 - [ ] SUCHT Pflege? (nicht bietet an)
 - [ ] Negativfilter clean? (siehe SOUL.md)
-- [ ] Deep-Link URL? (/s-anzeige/ + ID)
+- [ ] Konkrete URL? (nicht Suchseite/Startseite/Domain)
 - [ ] Ort oder PLZ?
 → Ein NEIN = NICHT ausgeben
 
 ### B2B (Standard: Firmenbedarf)
 - [ ] Echte Firma mit Website?
 - [ ] Vertriebsbedarf erkennbar?
-- [ ] Deep-Link URL? (/firma/ + Name)
+- [ ] Konkrete URL? (nicht Suchseite/Startseite)
 - [ ] NICHT Jobanzeige/Freelancer/Eigenwerbung?
 → Ein NEIN = NICHT ausgeben
 
